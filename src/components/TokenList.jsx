@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useRef } from "react";
+import { createTheme, useMediaQuery } from "@mui/material";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchTokenListRequest } from "../redux/actions/tokenAction";
 import TokenListLogo from "../assets/img/Tokenbar-Logo.png";
-import TopToken from "./common/TopToken";
-import TokenTable from "./TokenTable";
+import { fetchTokenListRequest } from "../redux/actions/tokenAction";
 import TopTokenList from "./common/TopTokenList";
 import "./style.css";
-import { createTheme, useMediaQuery } from "@mui/material";
+import TokenDetailModal from "./TokenDetailModal";
+import TokenTable from "./TokenTable";
 
 const TokenList = () => {
   const theme = createTheme({
@@ -62,6 +62,15 @@ const TokenList = () => {
 
   const [isEditing, setIsEditing] = useState(false);
   const [text, setText] = useState("Select Token/Contract Address ⌄");
+
+  const [tokenDetailModalOpen, setTokenDetailModalOpen] = useState(false);
+  const [selectedToken, setSelectedToken] = useState(null);
+
+  const handleTokenClick = (token) => {
+    console.log({ token });
+    setSelectedToken(token);
+    setTokenDetailModalOpen(true);
+  };
 
   useEffect(() => {
     setFilteredTokenList([...tokenList]);
@@ -154,9 +163,18 @@ const TokenList = () => {
             }}
           >
             {/* Add your div content here */}
-            <TokenTable tokenData={filteredTokenList} />
+            <TokenTable
+              onTokenClick={handleTokenClick}
+              tokenData={filteredTokenList}
+            />
           </div>
         )}
+
+        <TokenDetailModal
+          token={selectedToken}
+          open={tokenDetailModalOpen}
+          onClose={() => setTokenDetailModalOpen(false)}
+        />
       </div>
     </div>
   );

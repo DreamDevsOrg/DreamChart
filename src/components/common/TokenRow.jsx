@@ -1,11 +1,9 @@
-import { useState, useEffect } from "react";
-import { checkImg, formatNumber } from "../../utils/funcs";
+import { useState } from "react";
+import { formatNumber, removeW } from "../../utils/funcs";
 import { svg2img } from "../../utils/randomAvatar";
-import { green } from "@mui/material/colors";
-import { removeW } from "../../utils/funcs";
 import "./style.css";
 
-const TokenRow = ({ data }) => {
+const TokenRow = ({ data, onTokenClick }) => {
   const [imageExists, setImageExists] = useState(false);
 
   // useEffect(() => {
@@ -22,7 +20,7 @@ const TokenRow = ({ data }) => {
   // }, [data.symbol]);
 
   return (
-    <tr>
+    <tr onClick={() => onTokenClick(data)}>
       <td
         style={{
           display: "flex",

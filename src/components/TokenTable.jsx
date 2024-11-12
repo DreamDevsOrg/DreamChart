@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import TokenRow from "./common/TokenRow";
 import "./style.css";
 
-const TokenTable = ({ tokenData }) => {
+const TokenTable = ({ tokenData, onTokenClick }) => {
   const [sortedData, setSortedData] = useState([...tokenData]);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
 
@@ -96,7 +96,7 @@ const TokenTable = ({ tokenData }) => {
         </thead>
         <tbody style={{ backgroundColor: "black" }}>
           {[...sortedData].map((rowData, index) => (
-            <TokenRow data={rowData} key={index} />
+            <TokenRow onTokenClick={onTokenClick} data={rowData} key={index} />
           ))}
         </tbody>
       </table>
