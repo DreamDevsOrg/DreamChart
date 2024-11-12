@@ -170,11 +170,13 @@ const TokenList = () => {
           </div>
         )}
 
-        <TokenDetailModal
-          token={selectedToken}
-          open={tokenDetailModalOpen}
-          onClose={() => setTokenDetailModalOpen(false)}
-        />
+        {selectedToken && (
+          <TokenDetailModal
+            token={selectedToken}
+            open={tokenDetailModalOpen}
+            onClose={() => setTokenDetailModalOpen(false)}
+          />
+        )}
       </div>
     </div>
   );
