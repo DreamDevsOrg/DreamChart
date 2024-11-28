@@ -202,15 +202,6 @@
   cursor: pointer;
 }
 
-/* .dropdown-button:active {
-  border: 2px solid #00a3cc;
-  text-wrap: nowrap;
-  background-color: #191919;
-  color: white;
-  font-size: large;
-  padding: 0.6rem 0.5rem;
-} */
-
 .table-container {
   border: 2px solid #00a3cc;
 }
@@ -270,4 +261,185 @@
 .font-regular {
   font-family: "altivo";
   font-weight: 400;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0); /* Start transparent */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeInOverlay 0.5s forwards; /* Add fade-in animation */
+}
+
+.modal-content {
+  background-color: #1a1a1a;
+  padding: 30px 40px;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 500px;
+  color: #fff;
+  position: relative;
+  opacity: 0;
+  transform: translateY(-20px);
+  animation: slideIn 0.5s forwards; /* Add slide-down animation */
+
+  border: 2px solid #00a3cc !important;
+  background-image: linear-gradient(#1a1a1a, #1a1a1a),
+    linear-gradient(135deg, #22ade2, #1482ff, #1cddd1);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+
+  .token-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #00a3cc;
+    padding-bottom: 15px;
+    color: white;
+
+    h2 {
+      margin-bottom: 0;
+    }
+  }
+
+  .token-info {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+
+    /* key text */
+    span.key {
+      text-align: left;
+    }
+  }
+
+  .address {
+    font-size: 0.9em;
+    color: #00a3cc;
+    word-break: break-all;
+    transition: color 0.3s ease;
+  }
+
+  .address:hover {
+    color: #22ade2;
+  }
+  
+}
+
+.modal-content.closing {
+  animation: slideOut 0.3s ease-in forwards;
+}
+
+.modal-close-button {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.modal-close-button:hover {
+  color: #00a3cc; /* Change color on hover to match theme */
+}
+
+/* Token Table Styles */
+.token-table tbody tr {
+  cursor: pointer;
+}
+
+/* Row */
+.token-table tbody tr:hover {
+  background-color: #333;
+}
+
+.table-row-container:hover td {
+  animation: rowHover 0.3s ease forwards;
+}
+
+/* Top Token */
+.token-item.top-token {
+  cursor: pointer;
+  padding: 0px 10px;
+  transition: all 0.3s ease;
+}
+
+.token-item.top-token:hover {
+  animation: rowHover 0.3s ease forwards;
+  border-radius: 5px;
+  color: #00a3cc;
+}
+/* Animations */
+@keyframes rowHover {
+  from {
+    background-color: transparent;
+  }
+  to {
+    background-color: #00a3cc45;
+  }
+}
+
+@keyframes fadeInOverlay {
+  to {
+    background-color: rgba(0, 0, 0, 0.5); /* Fade to semi-transparent */
+  }
+}
+
+@keyframes fadeOutOverlay {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes slideInTable {
+  from { 
+    opacity: 0;
+    transform: translateY(-60px);
+    transform: translateX(-50%);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes slideIn {
+  from { 
+    opacity: 0;
+    transform: translateY(-60px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideOut {
+  from { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to { 
+    opacity: 0;
+    transform: translateY(-60px);
+  }
 }

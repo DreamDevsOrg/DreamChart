@@ -3,7 +3,7 @@ import { checkImg } from "../../utils/funcs";
 import { svg2img } from "../../utils/randomAvatar";
 import { removeW } from "../../utils/funcs";
 
-const TopToken = ({ itemData }) => {
+const TopToken = ({ itemData, onTokenClick }) => {
   const [imageExists, setImageExists] = useState(false);
   const tokenRef = useRef(null);
 
@@ -31,7 +31,10 @@ const TopToken = ({ itemData }) => {
   }, [itemData.symbol]);
 
   return (
-    <div ref={tokenRef} className="token-item font-header top-token">
+    <div
+      onClick={() => onTokenClick(itemData)}
+      ref={tokenRef} className="token-item font-header top-token"
+    >
       <div className="token-element">{itemData.num}</div>
       <img
         className="token-element"

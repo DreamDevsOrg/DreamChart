@@ -1,53 +1,46 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchTokenListRequest } from "../redux/actions/tokenAction";
+import { formatNumber } from "../utils/funcs";
 import TokenListLogo from "../assets/img/Tokenbar-Logo.png";
-import TopToken from "./common/TopToken";
-import TokenTable from "./TokenTable";
 import TopTokenList from "./common/TopTokenList";
+import TokenTable from "./TokenTable";
+import Modal from "./common/Modal"; // Import the Modal component
 import "./style.css";
 import { createTheme, useMediaQuery } from "@mui/material";
+import { svg2img } from "../utils/randomAvatar";
 
 const TokenList = () => {
+  // Existing theme and media query setup
   const theme = createTheme({
-    // Define the theme within the component
     breakpoints: {
       values: {
-        xs: 0,
-        sm: 600,
-        md: 960,
-        lg: 1160, // Change the value of lg breakpoint here
-        xl: 1560,
+        xs: 0, sm: 600, md: 960, lg: 1160, xl: 1560,
       },
     },
   });
-
-  const isLargeScreen = useMediaQuery(theme.breakpoints.up("lg")); // Use the theme with useMediaQuery
-  const MediumScreen = useMediaQuery(theme.breakpoints.down("lg")); // Use the theme with useMediaQuery
-
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up("lg"));
+  const MediumScreen = useMediaQuery(theme.breakpoints.down("lg"));
   const [isMediumScreen, setIsMediumScreen] = useState(MediumScreen);
 
   const dispatch = useDispatch();
   useEffect(() => {
-    // Dispatch the action to fetch token data
     dispatch(fetchTokenListRequest());
-  }, [fetchTokenListRequest]);
+  }, [dispatch]);
 
   const tokenList = useSelector((state) => state.tokenReducer.tokenList);
-  const loading = useSelector((state) => state.tokenReducer.loading);
-  const error = useSelector((state) => state.tokenReducer.error);
-
   const [filteredTokenList, setFilteredTokenList] = useState([...tokenList]);
 
+  // Existing logic for limitedTokenList
   const sortedTokenList = tokenList.sort(
     (a, b) =>
       (b.volume24HrsETH * 1) / (b.tradeVolumeETH * 1) -
       (a.volume24HrsETH * 1) / (a.tradeVolumeETH * 1)
   );
-
-  // Slice the sorted token list to display only the first 7 items
-  const limitedTokenList = sortedTokenList.slice(0, 10).map((item, index) => {
-    return {
+  const limitedTokenList = sortedTokenList.slice(0, 10)
+    // Basic Mapping
+    .map((item, index) => ({
+      ...item,
       num: "#" + (index + 1),
       id: item.id,
       name: item.name,
@@ -57,9 +50,13 @@ const TokenList = () => {
         ((item.volume24HrsETH * 1) / (item.tradeVolumeETH * 1)) *
         100
       ).toFixed(2),
-    };
-  });
+    }));
 
+  // New state for selected token and modal visibility
+  const [selectedToken, setSelectedToken] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Existing state for editing and input text
   const [isEditing, setIsEditing] = useState(false);
   const [text, setText] = useState("Select Token/Contract Address ⌄");
 
@@ -67,19 +64,30 @@ const TokenList = () => {
     setFilteredTokenList([...tokenList]);
   }, [tokenList, isEditing]);
 
+  // Handle token click to open modal
+  const handleTokenClick = (token) => {
+    console.log(token);
+    setSelectedToken(token);
+    setIsModalOpen(true);
+  };
+
+  // Handle modal close
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedToken(null);
+  };
+
+  // Existing functions for input handling
   const handleEditClick = () => {
     setIsEditing(true);
   };
 
   const handleInputChange = (e) => {
     setFilteredTokenList(
-      [...tokenList].filter((obj) => {
-        // Check if any of the object's properties include the text
-        return (
-          obj.symbol.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          obj.id.toLowerCase().includes(e.target.value.toLowerCase())
-        );
-      })
+      [...tokenList].filter((obj) =>
+        obj.symbol.toLowerCase().includes(e.target.value.toLowerCase()) ||
+        obj.id.toLowerCase().includes(e.target.value.toLowerCase())
+      )
     );
   };
 
@@ -87,7 +95,6 @@ const TokenList = () => {
 
   const handleClickOutside = (event) => {
     if (divRef.current && !divRef.current.contains(event.target)) {
-      // Clicked outside the div
       handleSaveClick();
     }
   };
@@ -96,7 +103,6 @@ const TokenList = () => {
     setIsEditing(false);
     setFilteredTokenList([...tokenList]);
     setText("Select Token/Contract Address ⌄");
-    // Perform any save operation with the edited text here
   };
 
   useEffect(() => {
@@ -113,7 +119,10 @@ const TokenList = () => {
         alt="Token List Logo"
         className="token-list-logo"
       />
-      <TopTokenList tokenList={limitedTokenList} />
+      <TopTokenList
+        tokenList={limitedTokenList}
+        onTokenClick={handleTokenClick}
+      />
       <div
         className="dropdown-container font-header"
         style={{ position: "relative" }}
@@ -125,7 +134,7 @@ const TokenList = () => {
             className="dropdown-button"
             onChange={handleInputChange}
             style={{ fontFamily: "altivo" }}
-            autoFocus // Automatically focus on the input field when it appears
+            autoFocus
           />
         ) : (
           <button
@@ -151,13 +160,60 @@ const TokenList = () => {
               color: "white",
               border: `2px solid transparent`,
               left: isLargeScreen ? "-13vw" : "-37vw",
+              animation: 'slideInTable 0.5s ease-in',
             }}
           >
-            {/* Add your div content here */}
-            <TokenTable tokenData={filteredTokenList} />
+            <TokenTable tokenData={filteredTokenList} onTokenClick={handleTokenClick} />
           </div>
         )}
       </div>
+      {isModalOpen && selectedToken && (
+        <Modal onClose={handleCloseModal}>
+          <div className="token-header">
+            { selectedToken.logo && (
+              <img
+                src={
+                  `https://assets.thetatoken.org/tokens/${selectedToken.logo}`
+                }
+                style={{ width: "40px", marginRight: "15px" }}
+              />
+            ) }
+            <h2>{selectedToken.name} ({selectedToken.symbol})</h2>
+          </div>
+
+          <div className="token-info">
+            <div className="info-row">
+              <span className="key">Price:</span>
+              <span>${selectedToken.derivedUSD}</span>
+            </div>
+            <div className="info-row">
+              <span className="key">24h Volume:</span>
+              <span>${formatNumber(Number(selectedToken.volume24HrsUSD))}</span>
+            </div>
+            <div className="info-row">
+              <span className="key">Market Cap:</span>
+              <span>${formatNumber(Number(selectedToken.tradeVolumeUSD))}</span>
+            </div>
+            <div className="info-row">
+              <span className="key">Total Liquidity:</span>
+              <span>${formatNumber(Number(selectedToken.totalLiquidityUSD))}</span>
+            </div>
+            <div className="info-row">
+              <span className="key">Transaction Count:</span>
+              <span>{selectedToken.txCount}</span>
+            </div>
+            <div className="info-row">
+              <span className="key">Contract Address:</span>
+              <span>
+                <a className="address" href={`https://explorer.thetatoken.org/account/${selectedToken.id}`} target="_blank" rel="noopener noreferrer">
+                {selectedToken.id}
+                  <i className="fas fa-external-link-alt" style={{ marginLeft: '8px', fontSize: '14px' }}></i>
+                </a>
+              </span>
+            </div>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };

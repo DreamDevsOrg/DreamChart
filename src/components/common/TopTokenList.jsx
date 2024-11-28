@@ -3,7 +3,7 @@ import "./style.css"; // Import your CSS file
 import TopToken from "./TopToken"; // Import the TopToken component
 import classNames from "classnames";
 
-const TopTokenList = ({ tokenList }) => {
+const TopTokenList = ({ tokenList, onTokenClick }) => {
   const listRef = useRef(null);
   const [isOverflowed, setIsOverFlowed] = useState(false);
 
@@ -16,7 +16,11 @@ const TopTokenList = ({ tokenList }) => {
     <div ref={listRef} className="tokenlist-body">
       <div className={classNames({ tokenlist: 1, overflowed: isOverflowed })}>
         {tokenList.map((item, index) => (
-          <TopToken key={index} itemData={item} />
+          <TopToken
+            key={index}
+            itemData={item}
+            onTokenClick={onTokenClick} 
+          />
         ))}
       </div>
     </div>

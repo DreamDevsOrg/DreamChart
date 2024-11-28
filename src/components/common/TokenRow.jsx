@@ -5,7 +5,7 @@ import { green } from "@mui/material/colors";
 import { removeW } from "../../utils/funcs";
 import "./style.css";
 
-const TokenRow = ({ data }) => {
+const TokenRow = ({ data, onTokenClick }) => {
   const [imageExists, setImageExists] = useState(false);
 
   // useEffect(() => {
@@ -22,14 +22,18 @@ const TokenRow = ({ data }) => {
   // }, [data.symbol]);
 
   return (
-    <tr>
+    <tr
+      className="table-row-container"
+      onClick={() => onTokenClick(data)}
+      style={{ cursor: 'pointer' }}
+    >
       <td
         style={{
           display: "flex",
           flexDirection: "row",
           justifyContent: "flex-center",
-          paddingTop: "20px",
-          paddingBottom: "0px",
+          paddingTop: "8px",
+          paddingBottom: "8px",
           borderCollapse: "collapse",
           borderColor: "black",
           paddingLeft: "80px",
